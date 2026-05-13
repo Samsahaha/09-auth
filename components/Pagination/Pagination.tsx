@@ -1,3 +1,5 @@
+'use client';
+
 import css from './Pagination.module.css';
 
 type PaginationProps = {

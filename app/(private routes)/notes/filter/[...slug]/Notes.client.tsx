@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import NoteList from '@/components/NoteList/NoteList';
@@ -17,7 +17,12 @@ type NotesClientProps = {
 };
 
 export default function NotesClient({ tag }: NotesClientProps) {
+  const router = useRouter();
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    router.refresh();
+  }, [router]);
 
   const [page, setPage] = useState(() =>
     Math.max(1, Number(searchParams.get('page') ?? 1) || 1)
