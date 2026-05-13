@@ -46,6 +46,8 @@ export default function NotesClient({ tag }: NotesClientProps) {
       }),
   });
 
+  const isEmpty = !isPending && !isError && notes.length === 0;
+
   return (
     <div style={{ paddingBottom: 24 }}>
       <h1 style={{ margin: '0 0 16px', fontSize: '1.75rem' }}>Notes</h1>
@@ -83,8 +85,11 @@ export default function NotesClient({ tag }: NotesClientProps) {
           {(error as Error)?.message ?? 'Failed to load notes.'}
         </p>
       ) : null}
-      {!isPending && !isError ? <NoteList notes={notes} /> : null}
-      <Pagination page={page} hasNext={notes.length === 12} search={debouncedSearch} />
+      {isEmpty ? <p style={{ color: '#64748b' }}>No notes yet.</p> : null}
+      {!isPending && !isError && notes.length > 0 ? <NoteList notes={notes} /> : null}
+      {!isPending && !isError && notes.length > 0 ? (
+        <Pagination page={page} hasNext={notes.length === 12} search={debouncedSearch} />
+      ) : null}
     </div>
   );
 }

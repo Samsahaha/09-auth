@@ -62,9 +62,8 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
-  const isPublicEntry = pathname === '/' || isAuthRoute(pathname);
-  if (hasSession && isPublicEntry) {
-    return NextResponse.redirect(new URL('/profile', request.url));
+  if (hasSession && isAuthRoute(pathname)) {
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   return response;

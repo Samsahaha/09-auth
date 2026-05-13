@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import Modal from '@/components/Modal/Modal';
 import NoteDetailView from '@/components/NoteDetailView/NoteDetailView';
@@ -8,6 +8,7 @@ import { fetchNoteById } from '@/lib/api/clientApi';
 import { noteDetailKey } from '@/lib/queryKeys';
 
 export default function NotePreviewClient() {
+  const router = useRouter();
   const params = useParams<{ id?: string }>();
   const id = String(params.id ?? '');
 
@@ -17,8 +18,12 @@ export default function NotePreviewClient() {
     enabled: Boolean(id),
   });
 
+  const handleClose = () => {
+    router.back();
+  };
+
   return (
-    <Modal>
+    <Modal onClose={handleClose}>
       {query.isPending ? <p style={{ color: '#64748b' }}>Loading note…</p> : null}
       {query.isError ? (
         <p style={{ color: '#b91c1c' }}>{(query.error as Error)?.message ?? 'Failed to load note.'}</p>
