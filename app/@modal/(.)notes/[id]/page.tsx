@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation';
-import Modal from '@/components/Modal/Modal';
+import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import NotePreviewClient from './NotePreview.client';
 import { fetchNoteById } from '@/lib/api/serverApi';
-import type { Note } from '@/types/note';
+import { noteDetailKey } from '@/lib/queryKeys';
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -10,17 +10,20 @@ type PageProps = {
 
 export default async function InterceptedNoteModalPage({ params }: PageProps) {
   const { id } = await params;
-  let note: Note;
+  const queryClient = new QueryClient();
 
   try {
-    note = await fetchNoteById(id);
+    await queryClient.prefetchQuery({
+      queryKey: noteDetailKey(id),
+      queryFn: () => fetchNoteById(id),
+    });
   } catch {
     notFound();
   }
 
   return (
-    <Modal>
-      <NotePreviewClient note={note} />
-    </Modal>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <NotePreviewClient />
+    </HydrationBoundary>
   );
 }

@@ -3,34 +3,33 @@
 import { isAxiosError } from 'axios';
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createNote } from '@/lib/api/clientApi';
+import { NOTE_TAG_OPTIONS, useNoteDraftStore } from '@/lib/store/noteDraftStore';
 import css from './NoteForm.module.css';
 
 export default function NoteForm() {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const title = useNoteDraftStore((s) => s.title);
+  const content = useNoteDraftStore((s) => s.content);
+  const tag = useNoteDraftStore((s) => s.tag);
+  const setTitle = useNoteDraftStore((s) => s.setTitle);
+  const setContent = useNoteDraftStore((s) => s.setContent);
+  const setTag = useNoteDraftStore((s) => s.setTag);
+  const resetDraft = useNoteDraftStore((s) => s.resetDraft);
+
   const [error, setError] = useState('');
-  const [pending, setPending] = useState(false);
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setError('');
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const title = String(formData.get('title') ?? '').trim();
-    const content = String(formData.get('content') ?? '').trim();
-    const tag = String(formData.get('tag') ?? '').trim();
-
-    if (!title || !content || !tag) {
-      setError('All fields are required.');
-      return;
-    }
-
-    setPending(true);
-    try {
-      const note = await createNote({ title, content, tag });
+  const mutation = useMutation({
+    mutationFn: () => createNote({ title: title.trim(), content: content.trim(), tag }),
+    onSuccess: (note) => {
+      queryClient.invalidateQueries({ queryKey: ['notes'] });
+      resetDraft();
       router.push(`/notes/${note.id}`);
       router.refresh();
-    } catch (err) {
+    },
+    onError: (err) => {
       if (isAxiosError(err)) {
         const message =
           (err.response?.data as { error?: string })?.error ?? err.message ?? 'Failed';
@@ -38,9 +37,17 @@ export default function NoteForm() {
       } else {
         setError('Failed to create note');
       }
-    } finally {
-      setPending(false);
+    },
+  });
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError('');
+    if (!title.trim() || !content.trim() || !tag) {
+      setError('All fields are required.');
+      return;
     }
+    mutation.mutate();
   }
 
   return (
@@ -49,28 +56,55 @@ export default function NoteForm() {
 
       <div className={css.field}>
         <label htmlFor="title">Title</label>
-        <input id="title" name="title" className={css.input} required />
+        <input
+          id="title"
+          name="title"
+          className={css.input}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
       </div>
 
       <div className={css.field}>
         <label htmlFor="content">Content</label>
-        <textarea id="content" name="content" className={css.textarea} required />
+        <textarea
+          id="content"
+          name="content"
+          className={css.textarea}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          required
+        />
       </div>
 
       <div className={css.field}>
         <label htmlFor="tag">Tag</label>
-        <input id="tag" name="tag" className={css.input} required />
+        <select
+          id="tag"
+          name="tag"
+          className={css.input}
+          value={tag}
+          onChange={(e) => setTag(e.target.value)}
+          required
+        >
+          {NOTE_TAG_OPTIONS.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className={css.actions}>
-        <button type="submit" className={css.submit} disabled={pending}>
+        <button type="submit" className={css.submit} disabled={mutation.isPending}>
           Save
         </button>
         <button
           type="button"
           className={css.cancel}
           onClick={() => router.push('/notes')}
-          disabled={pending}
+          disabled={mutation.isPending}
         >
           Cancel
         </button>

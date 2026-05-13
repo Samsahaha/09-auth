@@ -1,3 +1,4 @@
+import type { AxiosResponse } from 'axios';
 import type { Note } from '@/types/note';
 import type { User } from '@/types/user';
 import { api } from './api';
@@ -26,9 +27,8 @@ export async function logout(): Promise<void> {
   await api.post('/auth/logout');
 }
 
-export async function checkSession(): Promise<boolean> {
-  const { data } = await api.get<{ success: boolean }>('/auth/session');
-  return data.success;
+export async function checkSession(): Promise<AxiosResponse<{ success: boolean }>> {
+  return api.get<{ success: boolean }>('/auth/session');
 }
 
 export async function getMe(): Promise<User> {

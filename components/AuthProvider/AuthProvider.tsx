@@ -38,9 +38,9 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 
     (async () => {
       try {
-        const ok = await checkSession();
+        const sessionRes = await checkSession();
         if (cancelled) return;
-        if (!ok) {
+        if (!sessionRes.data.success) {
           try {
             await logout();
           } catch {
