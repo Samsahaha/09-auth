@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import NoteList from '@/components/NoteList/NoteList';
 import Pagination from '@/components/Pagination/Pagination';
+import SearchBox from '@/components/SearchBox/SearchBox';
 import { fetchNotes } from '@/lib/api/clientApi';
 import { notesListKey } from '@/lib/queryKeys';
 
@@ -17,25 +18,39 @@ type NotesClientProps = {
 
 export default function NotesClient({ tag }: NotesClientProps) {
   const searchParams = useSearchParams();
-  const page = Math.max(1, Number(searchParams.get('page') ?? 1) || 1);
-  const urlSearch = searchParams.get('search') ?? '';
 
-  const [inputSearch, setInputSearch] = useState(urlSearch);
-  const [debouncedSearch, setDebouncedSearch] = useState(urlSearch);
-
-  useEffect(() => {
-    queueMicrotask(() => {
-      setInputSearch(urlSearch);
-      setDebouncedSearch(urlSearch);
-    });
-  }, [urlSearch]);
+  const [page, setPage] = useState(() =>
+    Math.max(1, Number(searchParams.get('page') ?? 1) || 1)
+  );
+  const [searchInput, setSearchInput] = useState(() => searchParams.get('search') ?? '');
+  const [debouncedSearch, setDebouncedSearch] = useState(
+    () => searchParams.get('search') ?? ''
+  );
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setDebouncedSearch(inputSearch), DEBOUNCE_MS);
+    const timer = window.setTimeout(() => setDebouncedSearch(searchInput), DEBOUNCE_MS);
     return () => window.clearTimeout(timer);
-  }, [inputSearch]);
+  }, [searchInput]);
 
-  const { data: notes = [], isPending, isError, error } = useQuery({
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchInput(value);
+  }, []);
+
+  const handleSearchSubmit = useCallback(() => {
+    setDebouncedSearch(searchInput);
+    setPage(1);
+  }, [searchInput]);
+
+  const handlePageChange = useCallback((nextPage: number) => {
+    setPage(Math.max(1, nextPage));
+  }, []);
+
+  const {
+    data: notes = [],
+    isPending,
+    isError,
+    error,
+  } = useQuery({
     queryKey: notesListKey(tag, debouncedSearch, page),
     queryFn: () =>
       fetchNotes({
@@ -51,7 +66,15 @@ export default function NotesClient({ tag }: NotesClientProps) {
   return (
     <div style={{ paddingBottom: 24 }}>
       <h1 style={{ margin: '0 0 16px', fontSize: '1.75rem' }}>Notes</h1>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 20, alignItems: 'center' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 12,
+          marginBottom: 20,
+          alignItems: 'center',
+        }}
+      >
         <Link href="/notes/action/create" style={{ fontSize: 14, color: '#0d6efd' }}>
           Create note
         </Link>
@@ -60,23 +83,10 @@ export default function NotesClient({ tag }: NotesClientProps) {
         </Link>
       </div>
       <div style={{ marginBottom: 16 }}>
-        <label htmlFor="notes-search" style={{ display: 'block', fontSize: 13, marginBottom: 6 }}>
-          Search
-        </label>
-        <input
-          id="notes-search"
-          type="search"
-          value={inputSearch}
-          onChange={(e) => setInputSearch(e.target.value)}
-          placeholder="Search notes…"
-          style={{
-            width: '100%',
-            maxWidth: 420,
-            padding: '8px 12px',
-            border: '1px solid #ced4da',
-            borderRadius: 6,
-            fontSize: 14,
-          }}
+        <SearchBox
+          value={searchInput}
+          onChange={handleSearchChange}
+          onSearch={handleSearchSubmit}
         />
       </div>
       {isPending ? <p style={{ color: '#64748b' }}>Loading notes…</p> : null}
@@ -88,7 +98,11 @@ export default function NotesClient({ tag }: NotesClientProps) {
       {isEmpty ? <p style={{ color: '#64748b' }}>No notes yet.</p> : null}
       {!isPending && !isError && notes.length > 0 ? <NoteList notes={notes} /> : null}
       {!isPending && !isError && notes.length > 0 ? (
-        <Pagination page={page} hasNext={notes.length === 12} search={debouncedSearch} />
+        <Pagination
+          page={page}
+          hasNext={notes.length === 12}
+          onPageChange={handlePageChange}
+        />
       ) : null}
     </div>
   );

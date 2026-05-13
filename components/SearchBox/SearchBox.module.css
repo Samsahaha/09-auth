@@ -2,7 +2,22 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  align-items: flex-end;
+}
+
+.label {
+  width: 100%;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   align-items: center;
+  width: 100%;
 }
 
 .input {
