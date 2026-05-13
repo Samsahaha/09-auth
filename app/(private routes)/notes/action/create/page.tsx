@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import CreateNoteForm from '@/components/CreateNoteForm/CreateNoteForm';
+import NoteForm from '@/components/NoteForm/NoteForm';
 
 export const metadata: Metadata = {
   title: 'Create note | Notehub',
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function CreateNotePage() {
   return (
     <main style={{ paddingTop: 16, paddingBottom: 32 }}>
-      <CreateNoteForm />
+      <NoteForm />
     </main>
   );
 }

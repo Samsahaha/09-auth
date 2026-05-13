@@ -1,31 +1,3 @@
-.wrap {
-  padding: 24px;
-  max-width: 960px;
-  margin: 0 auto;
-}
-
-.title {
-  margin: 0 0 16px;
-  font-size: 1.75rem;
-}
-
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.toolbar a {
-  font-size: 14px;
-  color: #0d6efd;
-  text-decoration: none;
-}
-
-.toolbar a:hover {
-  text-decoration: underline;
-}
-
 .grid {
   display: grid;
   gap: 12px;

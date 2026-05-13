@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import InterceptedModal from '@/components/InterceptedModal/InterceptedModal';
+import Modal from '@/components/Modal/Modal';
 import NoteDetailView from '@/components/NoteDetailView/NoteDetailView';
 import { fetchNoteById } from '@/lib/api/serverApi';
 import type { Note } from '@/types/note';
@@ -19,8 +19,8 @@ export default async function InterceptedNoteModalPage({ params }: PageProps) {
   }
 
   return (
-    <InterceptedModal>
+    <Modal>
       <NoteDetailView note={note} />
-    </InterceptedModal>
+    </Modal>
   );
 }

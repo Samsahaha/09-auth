@@ -1,13 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import css from './InterceptedModal.module.css';
+import css from './Modal.module.css';
 
-type InterceptedModalProps = {
+type ModalProps = {
   children: React.ReactNode;
 };
 
-export default function InterceptedModal({ children }: InterceptedModalProps) {
+export default function Modal({ children }: ModalProps) {
   const router = useRouter();
 
   return (

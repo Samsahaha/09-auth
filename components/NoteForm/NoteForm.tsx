@@ -4,9 +4,9 @@ import { isAxiosError } from 'axios';
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createNote } from '@/lib/api/clientApi';
-import css from './CreateNoteForm.module.css';
+import css from './NoteForm.module.css';
 
-export default function CreateNoteForm() {
+export default function NoteForm() {
   const router = useRouter();
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
