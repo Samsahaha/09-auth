@@ -33,12 +33,20 @@ export default function NotesClient({ tag }: NotesClientProps) {
   );
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setDebouncedSearch(searchInput), DEBOUNCE_MS);
+    const timer = window.setTimeout(() => {
+      setDebouncedSearch((prevDebounced) => {
+        if (prevDebounced !== searchInput) {
+          setPage(1);
+        }
+        return searchInput;
+      });
+    }, DEBOUNCE_MS);
     return () => window.clearTimeout(timer);
   }, [searchInput]);
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchInput(value);
+    setPage(1);
   }, []);
 
   const handleSearchSubmit = useCallback(() => {
