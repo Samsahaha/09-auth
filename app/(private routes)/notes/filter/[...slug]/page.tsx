@@ -1,6 +1,4 @@
-import NoteList from '@/components/NoteList/NoteList';
-import Pagination from '@/components/Pagination/Pagination';
-import SearchBox from '@/components/SearchBox/SearchBox';
+import NotesClient from './Notes.client';
 import { fetchNotes } from '@/lib/api/serverApi';
 
 type PageProps = {
@@ -19,13 +17,12 @@ export default async function NotesFilterSlugPage({ params, searchParams }: Page
   const filterPath = `/notes/filter/${slug.join('/')}`;
 
   return (
-    <div style={{ paddingBottom: 24 }}>
-      <h1 style={{ margin: '0 0 16px', fontSize: '1.75rem' }}>Notes</h1>
-      <div style={{ marginBottom: 16 }}>
-        <SearchBox action={filterPath} defaultSearch={search} />
-      </div>
-      <NoteList notes={notes} />
-      <Pagination page={page} hasNext={notes.length === 12} search={search} />
-    </div>
+    <NotesClient
+      notes={notes}
+      page={page}
+      hasNext={notes.length === 12}
+      search={search}
+      filterPath={filterPath}
+    />
   );
 }

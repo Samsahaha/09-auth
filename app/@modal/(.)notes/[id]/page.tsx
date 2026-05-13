@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Modal from '@/components/Modal/Modal';
-import NoteDetailView from '@/components/NoteDetailView/NoteDetailView';
+import NotePreviewClient from './NotePreview.client';
 import { fetchNoteById } from '@/lib/api/serverApi';
 import type { Note } from '@/types/note';
 
@@ -20,7 +20,7 @@ export default async function InterceptedNoteModalPage({ params }: PageProps) {
 
   return (
     <Modal>
-      <NoteDetailView note={note} />
+      <NotePreviewClient note={note} />
     </Modal>
   );
 }
