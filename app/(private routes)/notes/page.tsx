@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { fetchNotes } from '@/lib/api/serverApi';
+import NotesListView from '@/components/NotesListView/NotesListView';
 
 export const metadata: Metadata = {
   title: 'Notes | Notehub',
@@ -6,15 +8,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function NotesPage() {
-  return (
-    <main style={{ padding: '32px', maxWidth: 960, margin: '0 auto' }}>
-      <h1 style={{ marginBottom: 16 }}>Notes</h1>
-      <p style={{ color: '#555' }}>
-        This route is protected. Extend this page with your notes list using{' '}
-        <code>fetchNotes</code> from <code>lib/api</code> when you continue the Notehub
-        flow.
-      </p>
-    </main>
-  );
+export default async function NotesPage() {
+  const notes = await fetchNotes({ page: 1, perPage: 12 });
+  return <NotesListView notes={notes} />;
 }

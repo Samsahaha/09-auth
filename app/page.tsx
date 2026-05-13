@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Home',
@@ -20,10 +21,10 @@ export default function HomePage() {
           <a href="/sign-up">Sign up</a>
         </li>
         <li>
-          <a href="/notes">Notes (private)</a>
+          <Link href="/notes">Notes (private)</Link>
         </li>
         <li>
-          <a href="/profile">Profile (private)</a>
+          <Link href="/profile">Profile (private)</Link>
         </li>
       </ul>
     </div>
