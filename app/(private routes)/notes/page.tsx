@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import NotesClient from './filter/[...slug]/Notes.client';
 import { fetchNotes } from '@/lib/api/serverApi';
-import { notesListKey } from '@/lib/queryKeys';
+import { NOTES_PER_PAGE, notesListKey } from '@/lib/queryKeys';
 
 export const metadata: Metadata = {
   title: 'Notes | Notehub',
@@ -22,7 +22,7 @@ export default async function NotesPage({ searchParams }: NotesPageProps) {
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: notesListKey('', search, page),
-    queryFn: () => fetchNotes({ page, perPage: 12, search, tag: '' }),
+    queryFn: () => fetchNotes({ page, perPage: NOTES_PER_PAGE, search, tag: '' }),
   });
 
   return (

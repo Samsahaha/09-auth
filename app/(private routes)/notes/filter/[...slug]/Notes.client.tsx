@@ -1,14 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import NoteList from '@/components/NoteList/NoteList';
 import Pagination from '@/components/Pagination/Pagination';
 import SearchBox from '@/components/SearchBox/SearchBox';
 import { fetchNotes } from '@/lib/api/clientApi';
-import { notesListKey } from '@/lib/queryKeys';
+import { NOTES_PER_PAGE, notesListHasNextPage, notesListKey } from '@/lib/queryKeys';
 
 const DEBOUNCE_MS = 400;
 
@@ -17,12 +17,7 @@ type NotesClientProps = {
 };
 
 export default function NotesClient({ tag }: NotesClientProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
-
-  useEffect(() => {
-    router.refresh();
-  }, [router]);
 
   const [page, setPage] = useState(() =>
     Math.max(1, Number(searchParams.get('page') ?? 1) || 1)
@@ -68,7 +63,7 @@ export default function NotesClient({ tag }: NotesClientProps) {
     queryFn: () =>
       fetchNotes({
         page,
-        perPage: 12,
+        perPage: NOTES_PER_PAGE,
         tag,
         search: debouncedSearch,
       }),
@@ -113,7 +108,7 @@ export default function NotesClient({ tag }: NotesClientProps) {
       {!isPending && !isError && notes.length > 0 ? (
         <Pagination
           page={page}
-          hasNext={notes.length === 12}
+          hasNext={notesListHasNextPage(notes)}
           onPageChange={handlePageChange}
         />
       ) : null}
