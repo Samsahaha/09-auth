@@ -69,8 +69,8 @@ export default function NotesClient({ tag }: NotesClientProps) {
       fetchNotes({
         page,
         perPage: 12,
-        ...(tag ? { tag } : {}),
-        ...(debouncedSearch ? { search: debouncedSearch } : {}),
+        tag,
+        search: debouncedSearch,
       }),
   });
 
