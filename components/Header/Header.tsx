@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import AuthNavigation from '@/components/AuthNavigation/AuthNavigation';
+import { NOTES_LIST_PATH } from '@/lib/constants/noteTags';
 import css from './Header.module.css';
 
 export default function Header() {
@@ -12,7 +13,7 @@ export default function Header() {
         <nav>
           <ul className={css.list}>
             <li className={css.navigationItem}>
-              <Link href="/notes" className={css.navLink}>
+              <Link href={NOTES_LIST_PATH} className={css.navLink}>
                 Notes
               </Link>
             </li>

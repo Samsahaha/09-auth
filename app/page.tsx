@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { NOTES_LIST_PATH } from '@/lib/constants/noteTags';
 
 export const metadata: Metadata = {
   title: 'Home',
@@ -21,7 +22,7 @@ export default function HomePage() {
           <a href="/sign-up">Sign up</a>
         </li>
         <li>
-          <Link href="/notes">Notes (private)</Link>
+          <Link href={NOTES_LIST_PATH}>Notes (private)</Link>
         </li>
         <li>
           <Link href="/profile">Profile (private)</Link>

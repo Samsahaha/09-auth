@@ -1,7 +1,15 @@
+import type { Metadata } from 'next';
 import { dehydrate, HydrationBoundary, QueryClient } from '@tanstack/react-query';
 import NotesClient from './Notes.client';
+import { tagFromFilterSlug } from '@/lib/constants/noteTags';
 import { fetchNotes } from '@/lib/api/serverApi';
 import { NOTES_PER_PAGE, notesListKey } from '@/lib/queryKeys';
+
+export const metadata: Metadata = {
+  title: 'Notes | Notehub',
+  description: 'Your private notes in Notehub.',
+  robots: { index: false, follow: false },
+};
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
@@ -12,7 +20,7 @@ export default async function NotesFilterSlugPage({ params, searchParams }: Page
   const { slug } = await params;
   const sp = await searchParams;
   const raw = slug[0] ?? 'all';
-  const tag = raw.toLowerCase() === 'all' ? '' : raw;
+  const tag = tagFromFilterSlug(raw);
   const page = Math.max(1, Number(sp.page ?? 1) || 1);
   const search = typeof sp.search === 'string' ? sp.search : '';
 

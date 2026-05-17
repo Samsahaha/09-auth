@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import NoteList from '@/components/NoteList/NoteList';
 import Pagination from '@/components/Pagination/Pagination';
 import SearchBox from '@/components/SearchBox/SearchBox';
+import { NOTES_LIST_PATH } from '@/lib/constants/noteTags';
 import { fetchNotes } from '@/lib/api/clientApi';
 import { NOTES_PER_PAGE, notesListHasNextPage, notesListKey } from '@/lib/queryKeys';
 
@@ -86,7 +87,7 @@ export default function NotesClient({ tag }: NotesClientProps) {
         <Link href="/notes/action/create" style={{ fontSize: 14, color: '#0d6efd' }}>
           Create note
         </Link>
-        <Link href="/notes/filter/all" style={{ fontSize: 14, color: '#0d6efd' }}>
+        <Link href={NOTES_LIST_PATH} style={{ fontSize: 14, color: '#0d6efd' }}>
           Filter by tag
         </Link>
       </div>

@@ -5,6 +5,7 @@ import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createNote } from '@/lib/api/clientApi';
+import { NOTES_LIST_PATH } from '@/lib/constants/noteTags';
 import { NOTE_TAG_OPTIONS, useNoteDraftStore } from '@/lib/store/noteDraftStore';
 import css from './NoteForm.module.css';
 
@@ -103,7 +104,7 @@ export default function NoteForm() {
         <button
           type="button"
           className={css.cancel}
-          onClick={() => router.push('/notes')}
+          onClick={() => router.push(NOTES_LIST_PATH)}
           disabled={mutation.isPending}
         >
           Cancel

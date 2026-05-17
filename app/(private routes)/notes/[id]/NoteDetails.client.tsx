@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { deleteNote, fetchNoteById } from '@/lib/api/clientApi';
+import { NOTES_LIST_PATH } from '@/lib/constants/noteTags';
 import NoteDetailView from '@/components/NoteDetailView/NoteDetailView';
 import { noteDetailKey } from '@/lib/queryKeys';
 
@@ -28,7 +29,7 @@ export default function NoteDetailsClient({ id }: NoteDetailsClientProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
       queryClient.removeQueries({ queryKey: noteDetailKey(id) });
-      router.push('/notes');
+      router.push(NOTES_LIST_PATH);
       router.refresh();
     },
     onError: () => setDeleteError('Could not delete the note.'),
@@ -37,7 +38,7 @@ export default function NoteDetailsClient({ id }: NoteDetailsClientProps) {
   return (
     <div style={{ padding: '24px', maxWidth: 720, margin: '0 auto' }}>
       <p style={{ marginBottom: 16 }}>
-        <Link href="/notes" style={{ color: '#0d6efd' }}>
+        <Link href={NOTES_LIST_PATH} style={{ color: '#0d6efd' }}>
           ← Back to notes
         </Link>
       </p>

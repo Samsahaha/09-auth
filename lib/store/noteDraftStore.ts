@@ -1,9 +1,10 @@
 import { create } from 'zustand';
+import { NOTE_API_TAGS } from '@/lib/constants/noteTags';
 
 const initial = {
   title: '',
   content: '',
-  tag: 'work',
+  tag: NOTE_API_TAGS[0],
 };
 
 type NoteDraftStore = {
@@ -24,4 +25,4 @@ export const useNoteDraftStore = create<NoteDraftStore>()((set) => ({
   resetDraft: () => set(initial),
 }));
 
-export const NOTE_TAG_OPTIONS = ['work', 'personal', 'ideas', 'study', 'other'] as const;
+export const NOTE_TAG_OPTIONS = NOTE_API_TAGS;

@@ -58,6 +58,10 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  if (pathname === '/notes') {
+    return NextResponse.redirect(new URL('/notes/filter/all', request.url));
+  }
+
   if (isPrivatePath(pathname) && !hasSession) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }

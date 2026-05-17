@@ -1,4 +1,8 @@
 import Link from 'next/link';
+import {
+  NOTE_FILTER_SIDEBAR_TAGS,
+  filterPathForTag,
+} from '@/lib/constants/noteTags';
 
 export default function FilterSidebarDefault() {
   return (
@@ -14,18 +18,14 @@ export default function FilterSidebarDefault() {
       }}
     >
       <strong style={{ fontSize: 14 }}>Tags</strong>
-      <Link href="/notes/filter/all" style={{ fontSize: 14, color: '#0d6efd' }}>
+      <Link href={filterPathForTag('')} style={{ fontSize: 14, color: '#0d6efd' }}>
         All
       </Link>
-      <Link href="/notes/filter/work" style={{ fontSize: 14, color: '#0d6efd' }}>
-        work
-      </Link>
-      <Link href="/notes/filter/personal" style={{ fontSize: 14, color: '#0d6efd' }}>
-        personal
-      </Link>
-      <Link href="/notes/filter/ideas" style={{ fontSize: 14, color: '#0d6efd' }}>
-        ideas
-      </Link>
+      {NOTE_FILTER_SIDEBAR_TAGS.map((tag) => (
+        <Link key={tag} href={filterPathForTag(tag)} style={{ fontSize: 14, color: '#0d6efd' }}>
+          {tag}
+        </Link>
+      ))}
     </nav>
   );
 }
